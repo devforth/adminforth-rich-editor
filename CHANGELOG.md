@@ -1,5 +1,5 @@
 
 # Changelog
 
-The complete changelog is available on the [GitHub Releases page](https://github.com/devforth/adminforth-upload/releases).
+The complete changelog is available on the [GitHub Releases page](https://github.com/devforth/adminforth-rich-editor/releases).
 
