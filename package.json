@@ -1,13 +1,13 @@
 {
   "name": "@adminforth/rich-editor",
-  "version": "1.0.18",
+  "version": "1.0.0",
   "description": "Rich editor plugin for adminforth",
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "npm link adminforth",
-    "build": "tsc"
+    "build": "tsc && rsync -av --exclude 'node_modules' custom dist/"
   },
   "repository": {
     "type": "git",
