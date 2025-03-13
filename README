@@ -1,0 +1,16 @@
+# AdminForth RichEditor Plugin
+
+<img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" />
+
+<img src="https://woodpecker.devforth.io/api/badges/3848/status.svg" alt="Build Status" />
+
+[![npm](https://img.shields.io/npm/v/@adminforth/rich-editor)](https://www.npmjs.com/package/@adminforth/rich-editor)
+
+
+
+[![GitHub issues](https://img.shields.io/github/issues/adamgibbons/adminforth-rich-editor-plugin)](
+
+
+Allows to add a rich text editor to your AdminForth text columns.
+
+## For ussage, see [AdminForth RichEditor Documentation](https://adminforth.dev/docs/tutorial/Plugins/RichEditor/)
