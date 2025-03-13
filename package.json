@@ -9,6 +9,7 @@
     "prepare": "npm link adminforth",
     "build": "tsc && rsync -av --exclude 'node_modules' custom dist/"
   },
+  "homepage": "https://adminforth.dev/docs/tutorial/Plugins/RichEditor/",
   "repository": {
     "type": "git",
     "url": "https://github.com/devforth/adminforth-rich-editor.git"
