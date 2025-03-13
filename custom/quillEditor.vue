@@ -27,7 +27,6 @@ import AsyncQueue from './async-queue';
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 
-
 function dbg(title: string,...args: any[]) {
   // return; // comment for debug
   console.log(title, ...args.map(a =>JSON.stringify(a, null, 1))); 
@@ -292,7 +291,16 @@ onMounted(() => {
 async function emitTextUpdate() {
   const editorHtml = quill.root.innerHTML;
   // remove completion from html
-  const html = editorHtml.replace(/<span[^>]*completer[^>]*>.*?<\/span>/g, '');
+  let html = editorHtml.replace(/<span[^>]*completer[^>]*>.*?<\/span>/g, '');
+  
+  // remove all style attributes
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  const elements = doc.querySelectorAll('*');
+  elements.forEach((el) => {
+    el.removeAttribute('style');
+  });
+  html = doc.body.innerHTML;
 
   if (lastText === html) {
     return;
@@ -527,8 +535,76 @@ function removeCompletionOnBlur() {
     font-style: italic;
   }
 
-  .ql-editor p {
-    margin-bottom: 0.5rem;
+  // basic typography
+  .ql-editor {
+    line-height: 1.5;
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+
+    /* Paragraphs */
+    p {
+      margin-bottom: 0.4rem;
+    }
+
+    /* Lists */
+    ul, ol {
+      margin-top: 0.4rem;
+      margin-bottom: 0.4rem;
+      padding-left: 1rem;
+    }
+
+    /* List items */
+    li {
+      margin-bottom: 0.2rem;
+    }
+
+    /* Horizontal rule */
+    hr {
+      margin: 0.8rem 0;
+      border: none;
+      border-top: 1px solid #ddd;
+    }
+
+    /* Blockquotes */
+    blockquote {
+      margin: 0.8rem 0;
+      padding-left: 0.8rem;
+      border-left: 2px solid #ccc;
+    }
+
+    /* Preformatted text */
+    pre {
+      margin: 0.8rem 0;
+      padding: 0.4rem;
+      background: #f8f9fa;
+      border-radius: 3px;
+    }
+
+    /* Tables */
+    table {
+      margin: 0.8rem 0;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.3rem;
+      border: 1px solid #ddd;
+    }
+
+    thead th {
+      border-bottom: 1.5px solid #aaa;
+    }
+
+    /* Images */
+    img {
+      margin: 0.4rem 0;
+      max-width: 100%;
+      height: auto;
+    }
   }
 
   .ql-snow .ql-stroke {
