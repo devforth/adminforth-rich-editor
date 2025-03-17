@@ -4,4 +4,4 @@
 
 Allows to add a rich text editor to your AdminForth text columns.
 
-## For ussage, see [AdminForth RichEditor Documentation](https://adminforth.dev/docs/tutorial/Plugins/RichEditor/)
+## For usage, see [AdminForth RichEditor Documentation](https://adminforth.dev/docs/tutorial/Plugins/RichEditor/)
