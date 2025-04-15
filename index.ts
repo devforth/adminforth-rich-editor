@@ -122,7 +122,9 @@ export default class RichEditorPlugin extends AdminForthPlugin {
       const deleteAttachmentRecords = async (
         adminforth: IAdminForth, options: PluginOptions, s3Paths: string[], adminUser: AdminUser
       ) => {
-        
+        if (!s3Paths.length) {
+          return;
+        }
         const attachmentPrimaryKeyField = this.attachmentResource.columns.find(c => c.primaryKey);
         
         const attachments = await adminforth.resource(options.attachments.attachmentResource).list(
