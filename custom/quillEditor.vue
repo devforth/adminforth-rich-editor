@@ -26,7 +26,9 @@ import adminforth from '@/adminforth';
 import AsyncQueue from './async-queue';
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import { useI18n } from 'vue-i18n';
 
+const { t } = useI18n();
 function dbg(title: string,...args: any[]) {
   // return; // comment for debug
   console.log(title, ...args.map(a =>JSON.stringify(a, null, 1))); 
@@ -130,7 +132,7 @@ async function saveToServer(file: File) {
 
   if (error) {
     adminforth.alert({
-      message: `File was not uploaded because of error: ${error}`,
+      message: `${t('File was not uploaded because of error:')} ${error}`,
       variant: 'danger'
     });
     return;
@@ -155,7 +157,7 @@ async function saveToServer(file: File) {
   });
   if (!success) {
     adminforth.alert({
-      messageHtml: `<div>Sorry but the file was not uploaded because of S3 Request Error: </div>
+      messageHtml: `<div>${t('Sorry but the file was not uploaded because of S3 Request Error:')} </div>
       <pre style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;">${
         xhr.responseText.replace(/</g, '&lt;').replace(/>/g, '&gt;')
       }</pre>`,
