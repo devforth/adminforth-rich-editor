@@ -300,19 +300,18 @@ export default class RichEditorPlugin extends AdminForthPlugin {
           currentVal = currentVal.slice(-promptLimit);
         }
 
-        //const resLabel = this.resourceConfig!.label;
-        const fieldLabel = this.resourceConfig?.columns.find(c => c.name === this.options.htmlFieldName)?.label || this.options.htmlFieldName;
-        const resourceLabel = this.resourceConfig?.label || this.resourceConfig?.resourceId;
-
+        const resLabel = this.resourceConfig?.label;
+       
         let content;
-
+        
         if (currentVal) {
-          content = `Continue writing for text/string field "${fieldLabel}" in the table "${resourceLabel}"\n` +
+          content = `Continue writing for text/string field "${this.options.htmlFieldName}"${resLabel ? " in the table " + resLabel : ""} \n` +
               (Object.keys(recordNoField).length > 0 ? `Record has values for the context: ${inputContext}\n` : '') +
               `Current field value: ${currentVal}\n` +
               "Don't talk to me. Just write text. No quotes. Don't repeat current field value, just write completion\n";
+
         } else {
-          content = `Fill text/string field "${fieldLabel}" in the table "${resourceLabel}"\n` +
+          content = `Fill text/string field "${this.options.htmlFieldName}"${resLabel ? " in the table " + resLabel : ""}\n` +
               (Object.keys(recordNoField).length > 0 ? `Record has values for the context: ${inputContext}\n` : '') +
               "Be short, clear and precise. No quotes. Don't talk to me. Just write text\n";
         }
