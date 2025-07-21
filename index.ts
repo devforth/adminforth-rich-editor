@@ -300,8 +300,8 @@ export default class RichEditorPlugin extends AdminForthPlugin {
           currentVal = currentVal.slice(-promptLimit);
         }
 
+        const fieldLabel = this.resourceConfig?.columns.find(c => c.name === this.options.htmlFieldName)?.label || this.options.htmlFieldName;
         const resLabel = this.resourceConfig!.label;
-        const fieldLabel = this.options?.htmlFieldName;
 
         let content;
         
