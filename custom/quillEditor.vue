@@ -289,6 +289,21 @@ onMounted(() => {
 
 });
 
+function isQuillContentEmpty(html: string): boolean {
+  const div = document.createElement('div');
+  div.innerHTML = html;
+
+  div.querySelectorAll('br').forEach(br => br.remove());
+
+  div.querySelectorAll('p').forEach(p => {
+    if (!p.textContent?.trim()) {
+      p.remove();
+    }
+  });
+
+  const text = div.textContent?.trim();
+  return !text;
+}
 
 async function emitTextUpdate() {
   const editorHtml = quill.root.innerHTML;
@@ -311,9 +326,9 @@ async function emitTextUpdate() {
   lastText = html;
 
   await (new Promise((resolve) => setTimeout(resolve, 0)));
-
+  const isEmpty = isQuillContentEmpty(html);
   dbg('⬆️ emit value suggestion-input', html);
-  emit('update:value', html);
+  emit('update:value', isEmpty ? '' : html);
 }
 
 // Auto-Completion functions
