@@ -5,6 +5,9 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "prepare": "npm link adminforth",
     "build": "tsc && rsync -av --exclude 'node_modules' custom dist/"
