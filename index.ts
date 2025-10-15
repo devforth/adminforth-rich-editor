@@ -273,12 +273,13 @@ export default class RichEditorPlugin extends AdminForthPlugin {
 
         if (this.options.completion.rateLimit?.limit) {
           // rate limit
-          const { error } = RateLimiter.checkRateLimit(
-            this.pluginInstanceId, 
-            this.options.completion.rateLimit?.limit,
-            this.adminforth.auth.getClientIp(headers),
-          );
-          if (error) {
+          // const { error } = RateLimiter.checkRateLimit(
+          //   this.pluginInstanceId, 
+          //   this.options.completion.rateLimit?.limit,
+          //   this.adminforth.auth.getClientIp(headers),
+          // );
+          const rateLimiter = new RateLimiter(this.options.completion.rateLimit?.limit);
+          if (!rateLimiter.consume(`${this.pluginInstanceId}-${this.adminforth.auth.getClientIp(headers)}`)) {
             return {
               completion: [],
             }
