@@ -24,6 +24,7 @@
   "author": "devforth",
   "license": "ISC",
   "dependencies": {
+    "adminforth": "^2.4.0-next.222",
     "cheerio": "^1.0.0"
   },
   "devDependencies": {
