@@ -24,10 +24,15 @@ export default class RichEditorPlugin extends AdminForthPlugin {
   attachmentResource: AdminForthResource = undefined;
 
   adminforth: IAdminForth;
+
+  rateLimiter: RateLimiter;
   
   constructor(options: PluginOptions) {
     super(options, import.meta.url);
     this.options = options;
+    if (this.options.completion.rateLimit?.limit) {
+      this.rateLimiter = new RateLimiter(this.options.completion.rateLimit?.limit);
+    }
   }
 
   async modifyResourceConfig(adminforth: IAdminForth, resourceConfig: AdminForthResource) {
@@ -271,15 +276,14 @@ export default class RichEditorPlugin extends AdminForthPlugin {
       handler: async ({ body, headers }) => {
         const { record } = body;
 
-        if (this.options.completion.rateLimit?.limit) {
+        if (this.rateLimiter) {
           // rate limit
           // const { error } = RateLimiter.checkRateLimit(
           //   this.pluginInstanceId, 
           //   this.options.completion.rateLimit?.limit,
           //   this.adminforth.auth.getClientIp(headers),
           // );
-          const rateLimiter = new RateLimiter(this.options.completion.rateLimit?.limit);
-          if (!rateLimiter.consume(`${this.pluginInstanceId}-${this.adminforth.auth.getClientIp(headers)}`)) {
+          if (!await this.rateLimiter.consume(`${this.pluginInstanceId}-${this.adminforth.auth.getClientIp(headers)}`)) {
             return {
               completion: [],
             }
