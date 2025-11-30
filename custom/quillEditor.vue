@@ -27,6 +27,9 @@ import adminforth from '@/adminforth';
 import AsyncQueue from './async-queue';
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
+import QuillTableBetter from 'quill-table-better';
+import 'quill-table-better/dist/quill-table-better.css';
+
 import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
@@ -88,6 +91,11 @@ class ImageBlot extends BlockEmbed {
 Quill.register(CompleteBlot);
 // @ts-ignore
 Quill.register(ImageBlot);
+
+Quill.register({
+  'modules/table-better': QuillTableBetter
+}, true);
+
 
 const updaterQueue = new AsyncQueue();
 
@@ -197,11 +205,7 @@ async function imageHandler() {
   };
 }
 
-onMounted(() => {
-  currentValue.value = props.record[props.column.name] || '';
-  editor.value.innerHTML = currentValue.value;
-
-  quill = new Quill(editor.value as HTMLElement, {
+const quillOptions = {
     theme: "snow",
     readOnly:props.column?.editReadonly,
     placeholder: 'Type here...',
@@ -210,6 +214,7 @@ onMounted(() => {
       toolbar: {
         container: props.meta.toolbar || [
             ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+            ['table-better'],
             ['blockquote', 'code-block', 'link', ...props.meta.uploadPluginInstanceId ? ['image'] : []],
             // [
             //   // 'image', 
@@ -237,6 +242,11 @@ onMounted(() => {
           image: imageHandler,
         },
       },
+      'table-better': {
+        language: 'en_US',
+        menus: ['column', 'row', 'merge', 'table', 'cell', 'wrap', 'delete'],
+        toolbarTable: true
+      },
       keyboard: {
         bindings: {
           tab: {
@@ -250,8 +260,24 @@ onMounted(() => {
         },
       }
     },
-  });
+  };
 
+  function initValue(quill: Quill) {
+    const html = props.record[props.column.name] || '';
+    const delta = quill.clipboard.convert({ html });
+    const [range] = quill.selection.getRange();
+    quill.updateContents(delta, Quill.sources.USER);
+    quill.setSelection(
+      delta.length() - (range?.length || 0),
+      Quill.sources.SILENT
+    );
+    quill.scrollSelectionIntoView();
+  }
+
+onMounted(() => {
+  currentValue.value = props.record[props.column.name] || '';
+  quill = new Quill(editor.value as HTMLElement, quillOptions);
+  initValue(quill);
   lastText = quill.getText();
 
   quill.on(Quill.events.TEXT_CHANGE, async (delta: any, oldDelta: any, source: string) => {
