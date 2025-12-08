@@ -30,7 +30,7 @@ export default class RichEditorPlugin extends AdminForthPlugin {
   constructor(options: PluginOptions) {
     super(options, import.meta.url);
     this.options = options;
-    if (this.options.completion.rateLimit?.limit) {
+    if (this.options.completion?.rateLimit?.limit) {
       this.rateLimiter = new RateLimiter(this.options.completion.rateLimit?.limit);
     }
   }
