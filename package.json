@@ -24,8 +24,10 @@
   "author": "devforth",
   "license": "ISC",
   "dependencies": {
-    "adminforth": "^2.4.0-next.238",
     "cheerio": "^1.0.0"
+  },
+  "peerDependencies": {
+    "adminforth": "^2.4.0-next.238"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
