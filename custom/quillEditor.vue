@@ -128,7 +128,7 @@ async function saveToServer(file: File) {
   const originalFilename = file.name.split('.').slice(0, -1).join('.');
   const originalExtension = file.name.split('.').pop();
   // send fd to s3
-  const { uploadUrl, tagline, previewUrl, s3Path, error } = await callAdminForthApi({
+  const { uploadUrl, tagline, previewUrl, filePath, error } = await callAdminForthApi({
       path: `/plugin/${props.meta.uploadPluginInstanceId}/get_file_upload_url`,
       method: 'POST',
       body: {
@@ -181,7 +181,7 @@ async function saveToServer(file: File) {
   const range = quill.getSelection();
   quill.insertEmbed(range.index, 'image', { 
     url: previewUrl, 
-    s3Path: s3Path, 
+    s3Path: filePath, 
     alt: file.name 
   }, 'user');
 
