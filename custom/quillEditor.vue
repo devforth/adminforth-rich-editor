@@ -35,7 +35,7 @@ import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 function dbg(title: string,...args: any[]) {
   // return; // comment for debug
-  console.log(title, ...args.map(a =>JSON.stringify(a, null, 1))); 
+  // console.log(title, ...args.map(a =>JSON.stringify(a, null, 1))); 
 }
 
 // blots/embed: Represents inline embed elements, like images or videos that can be inserted into the text flow.
@@ -166,7 +166,7 @@ async function saveToServer(file: File) {
   });
   if (!success) {
     adminforth.alert({
-      messageHtml: `<div>${t('Sorry but the file was not uploaded because of S3 Request Error:')} </div>
+      messageHtml: `<div>${t('Sorry but the file was not uploaded because of storage adapter Request Error:')} </div>
       <pre style="white-space: pre-wrap; word-wrap: break-word; overflow-wrap: break-word; max-width: 100%;">${
         xhr.responseText.replace(/</g, '&lt;').replace(/>/g, '&gt;')
       }</pre>`,
@@ -355,7 +355,8 @@ async function emitTextUpdate() {
   await (new Promise((resolve) => setTimeout(resolve, 0)));
   const isEmpty = isQuillContentEmpty(html);
   dbg('⬆️ emit value suggestion-input', html);
-  emit('update:value', isEmpty ? '' : html);
+  console.log('⬆️ emit value suggestion-input', html);
+  emit('update:value', html);
 }
 
 // Auto-Completion functions
