@@ -390,7 +390,7 @@ async function emitTextUpdate() {
   await (new Promise((resolve) => setTimeout(resolve, 0)));
   const isEmpty = isQuillContentEmpty(html);
   dbg('⬆️ emit value suggestion-input', html);
-  console.log('⬆️ emit value suggestion-input', html);
+  // console.log('⬆️ emit value suggestion-input', html);
   emit('update:value', html);
 }
 
