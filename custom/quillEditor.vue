@@ -88,9 +88,33 @@ class ImageBlot extends BlockEmbed {
 }
 
 // @ts-ignore
+class ImageBlotEmbed extends Embed {
+  static blotName = 'image_embed';
+  static tagName = 'img';
+
+  static create(value) {
+    let node = super.create();
+    node.setAttribute('alt', value.alt);
+    node.setAttribute('src', value.url);
+    node.setAttribute('data-s3path', value['s3Path']);
+    return node;
+  }
+  
+  static value(node) {
+    return {
+      alt: node.getAttribute('alt'),
+      url: node.getAttribute('src'),
+      s3Path: node.getAttribute('data-s3path'),
+    };
+  }
+}
+
+// @ts-ignore
 Quill.register(CompleteBlot);
 // @ts-ignore
 Quill.register(ImageBlot);
+// @ts-ignore
+Quill.register(ImageBlotEmbed);
 
 Quill.register({
   'modules/table-better': QuillTableBetter
@@ -179,12 +203,23 @@ async function saveToServer(file: File) {
 
   // here we have s3Path, call createResource to save the image
   const range = quill.getSelection();
-  quill.insertEmbed(range.index, 'image', { 
-    url: previewUrl, 
-    s3Path: filePath, 
-    alt: file.name 
-  }, 'user');
+    const formats = quill.getFormat(range.index);
 
+    // here we are checking if we are inside table cell
+    if (formats['table-cell']) {
+      // if so, we insert image_embed blot in order not to break table structure
+      quill.insertEmbed(range.index, 'image_embed', { 
+        url: previewUrl, 
+        s3Path: filePath, 
+        alt: file.name 
+      }, 'user');
+    } else {
+      quill.insertEmbed(range.index, 'image', { 
+        url: previewUrl, 
+        s3Path: filePath, 
+        alt: file.name 
+      }, 'user');
+    }
 }
 
 async function imageHandler() {
