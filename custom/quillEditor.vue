@@ -756,7 +756,13 @@ function removeCompletionOnBlur() {
   @apply dark:bg-darkInputBackground;
 }
 
-.ql-table-menus-container, .ql-table-dropdown-list {
+.ql-table-menus-container, .ql-table-dropdown-list, .ql-table-properties-form {
+
+  h2 {
+    @apply dark:text-darkInputText;
+    @apply text-lightInputText;
+  }
+
   @apply dark:bg-darkForm;
   @apply bg-lightForm;
   @apply dark:border-darkInputBorder;
@@ -791,7 +797,47 @@ function removeCompletionOnBlur() {
     @apply dark:fill-darkInputBackground dark:stroke-darkPrimary;
   }
 
+  .properties-form-action-row {
+    button {
+      @apply dark:bg-darkEditViewButtonBackground;
+      @apply bg-lightEditViewButtonBackground;
+      @apply dark:text-darkInputText;
+      @apply text-lightInputText;
+
+      &:hover {
+        @apply dark:bg-darkEditViewButtonBackgroundHover;
+        @apply bg-lightEditViewButtonBackgroundHover;
+      }
+    }
+  }
+
+  label {
+    top: -75%;
+    @apply dark:text-darkInputText;
+    @apply text-lightInputText;
+    @apply dark:bg-darkForm;
+    @apply bg-lightForm;
+  }
 }
+
+  .ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-btns-checked  {
+    @apply dark:bg-darkEditViewButtonBackgroundHover;
+    @apply bg-lightEditViewButtonBackgroundHover;
+    svg path {
+      @apply dark:stroke-darkPrimary;
+      @apply stroke-lightPrimary;
+    }
+  }
+
+  .ql-table-properties-form .properties-form-row .ql-table-check-container .ql-table-tooltip-hover:hover  {
+    @apply dark:bg-darkEditViewButtonBackgroundHover;
+    @apply bg-lightEditViewButtonBackgroundHover;
+  }
+
+  .ql-table-dropdown-properties .ql-table-dropdown-list li:hover {
+    @apply dark:bg-darkInputBackground;
+    @apply bg-lightInputBackground;
+  }
 
   .ql-table-dropdown,.ql-table-dropdown li {
     &:hover {
@@ -811,6 +857,23 @@ function removeCompletionOnBlur() {
 
 .dark .ql-table-triangle-down::before,.dark .ql-table-triangle-down::after {
   border-bottom: theme('colors.darkForm') !important;
+}
+
+.ql-table-color-container .color-picker .color-picker-select {
+  @apply dark:bg-darkForm;
+  @apply bg-lightForm;
+  .erase-container:hover {
+    @apply dark:bg-darkInputBackground;
+    @apply bg-lightInputBackground;
+  }
+  svg path {
+    @apply dark:stroke-darkPrimary;
+    @apply stroke-lightPrimary;
+  }
+  .color-picker-palette {
+    @apply dark:bg-darkForm;
+    @apply bg-lightForm;
+  }
 }
 
 </style>
