@@ -712,7 +712,105 @@ function removeCompletionOnBlur() {
 
 }
 
+.ql-table-button-disabled {
+  background-color: theme('colors.lightInputBackground') !important;
+  svg path  {
+    opacity: 0.5;
+  } 
+  svg .ql-stroke, svg .ql-fill {
+    stroke: theme('colors.lightPrimary') !important;
+    opacity: 0.5 !important;
+  }
+}
 
+.dark .ql-table-button-disabled {
+  background-color: theme('colors.darkInputBackground') !important;
+  svg path  {
+    opacity: 0.5;
+  }
+  svg .ql-stroke, svg .ql-fill {
+    stroke: theme('colors.darkPrimary') !important;
+    opacity: 0.5 !important;
+  }
+}
 
+.ql-table-better svg path  {
+  @apply dark:fill-darkPrimary;
+  @apply fill-lightPrimary;
+}
+
+.ql-table-select-container {
+  @apply dark:bg-darkForm;
+  @apply bg-lightForm;
+}
+
+.ql-table-select-label {
+  @apply dark:text-darkInputText;
+  @apply text-lightInputText;
+}
+
+.ql-table-select-list span {
+  @apply dark:border-darkInputBorder;
+  @apply border-lightInputBorder;
+  @apply bg-lightInputBackground;
+  @apply dark:bg-darkInputBackground;
+}
+
+.ql-table-menus-container, .ql-table-dropdown-list {
+  @apply dark:bg-darkForm;
+  @apply bg-lightForm;
+  @apply dark:border-darkInputBorder;
+  @apply border-lightInputBorder;
+  
+  .ql-table-dropdown svg path {
+    @apply fill-lightPrimary;
+    @apply dark:fill-darkPrimary;
+    @apply stroke-lightInputText;
+    @apply dark:stroke-darkInputText;
+  }
+
+  .ql-table-dropdown[data-category="delete"] svg path {
+    @apply fill-lightForm;
+    @apply dark:fill-darkForm;
+    @apply stroke-lightPrimary;
+    @apply dark:stroke-darkPrimary;
+  }
+
+  .ql-table-dropdown[data-category="delete"]:hover svg path {
+    @apply fill-lightInputBackground;
+    @apply dark:fill-darkInputBackground;
+  }
+
+  .ql-table-dropdown > span.ql-table-tooltip-hover svg:nth-of-type(2) path {
+    @apply fill-lightForm stroke-lightPrimary;
+    @apply dark:fill-darkForm dark:stroke-darkPrimary;
+  }
+
+  .ql-table-dropdown:hover > span.ql-table-tooltip-hover svg:nth-of-type(2) path {
+    @apply fill-lightInputBackground stroke-lightPrimary;
+    @apply dark:fill-darkInputBackground dark:stroke-darkPrimary;
+  }
+
+}
+
+.ql-table-dropdown, li {
+    &:hover {
+    @apply dark:bg-darkInputBackground;
+    @apply bg-lightInputBackground;
+  }
+}
+
+.ql-table-switch-inner[aria-checked="true"] {
+  @apply dark:bg-darkPrimary;
+  @apply bg-lightPrimary;
+}
+
+.ql-table-triangle-down::before, .ql-table-triangle-down::after {
+  border-bottom: theme('colors.lightForm') !important;
+}
+
+.dark .ql-table-triangle-down::before,.dark .ql-table-triangle-down::after {
+  border-bottom: theme('colors.darkForm') !important;
+}
 
 </style>
