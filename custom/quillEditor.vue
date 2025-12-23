@@ -793,7 +793,7 @@ function removeCompletionOnBlur() {
 
 }
 
-.ql-table-dropdown, li {
+  .ql-table-dropdown,.ql-table-dropdown li {
     &:hover {
     @apply dark:bg-darkInputBackground;
     @apply bg-lightInputBackground;
