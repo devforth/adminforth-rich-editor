@@ -27,8 +27,8 @@ import adminforth from '@/adminforth';
 import AsyncQueue from './async-queue';
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
-import QuillTableBetter from 'quill-table-better';
-import 'quill-table-better/dist/quill-table-better.css';
+import QuillTableBetter from 'quill-table-better-yaroslav8765';
+import 'quill-table-better-yaroslav8765/dist/quill-table-better.css';
 
 import { useI18n } from 'vue-i18n';
 
@@ -348,7 +348,6 @@ onMounted(() => {
     document.addEventListener('touchstart', handleTouchStart, false);
     document.addEventListener('touchmove', handleTouchMove, false);
   }
-
 });
 
 function isQuillContentEmpty(html: string): boolean {
