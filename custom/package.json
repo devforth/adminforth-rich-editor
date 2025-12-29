@@ -11,6 +11,6 @@
   "license": "ISC",
   "dependencies": {
     "quill": "^2.0.2",
-    "quill-table-better-yaroslav8765": "^1.2.5"
+    "quill-table-better-yaroslav8765": "^1.2.6"
   }
 }
