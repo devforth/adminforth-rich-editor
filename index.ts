@@ -215,6 +215,7 @@ export default class RichEditorPlugin extends AdminForthPlugin {
     }
   }
   
+  
   validateConfigAfterDiscover(adminforth: IAdminForth, resourceConfig: AdminForthResource) {
     this.adminforth = adminforth;
     if (this.options.completion?.adapter) {
