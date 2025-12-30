@@ -10,6 +10,7 @@
       @keydown.tab.prevent.stop="approveCompletion('all')"
       @keydown.ctrl.right.prevent.stop="approveCompletion('word')"
       @keydown.ctrl.down.prevent.stop="startCompletion()"
+      @mousedown="textAreaClickHandler"
     >
       
     </div>
@@ -144,6 +145,7 @@ let lastText: string | null = null;
 
 const imageProgress = ref(0);
 
+const selectedSymbolsCount = ref(0);
 
 async function saveToServer(file: File) {
   const fd = new FormData();
@@ -314,6 +316,10 @@ onMounted(() => {
   quill = new Quill(editor.value as HTMLElement, quillOptions);
   initValue(quill);
   lastText = quill.getText();
+  const linkButton = document.querySelector('.ql-link');
+  if (linkButton) {
+    linkButton.classList.add('ql-table-button-disabled');
+  }
 
   quill.on(Quill.events.TEXT_CHANGE, async (delta: any, oldDelta: any, source: string) => {
     dbg('🪽 TEXT_CHANGE fired ', delta, oldDelta, source);
@@ -332,6 +338,13 @@ onMounted(() => {
       editorFocused.value = true;
       startCompletion();
     }
+    if (range.length > 0) {
+      selectedSymbolsCount.value = range.length;
+      linkButton?.classList.remove('ql-table-button-disabled');
+    } else {
+      selectedSymbolsCount.value = 0;
+      linkButton.classList.add('ql-table-button-disabled');
+    }
     const text = quill.getText();
     // don't allow to select after completion
     // TODO
@@ -349,6 +362,13 @@ onMounted(() => {
     document.addEventListener('touchmove', handleTouchMove, false);
   }
 });
+
+function textAreaClickHandler() {
+  const linkButton = document.querySelector('.ql-link');
+  if (linkButton && selectedSymbolsCount.value === 0) {
+    linkButton.classList.add('ql-table-button-disabled');
+  }
+}
 
 function isQuillContentEmpty(html: string): boolean {
   const div = document.createElement('div');
