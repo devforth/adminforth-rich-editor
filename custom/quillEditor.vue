@@ -895,4 +895,8 @@ function removeCompletionOnBlur() {
   }
 }
 
+.properties-form-row .ql-table-check-container {
+  visibility: hidden;
+}
+
 </style>
