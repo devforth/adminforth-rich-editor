@@ -315,22 +315,17 @@ export default class RichEditorPlugin extends AdminForthPlugin {
           content = `Continue writing for text/string field "${fieldLabel}" in the table "${resLabel}"\n` +
               (Object.keys(recordNoField).length > 0 ? `Record has values for the context: ${inputContext}\n` : '') +
               `Current field value: ${currentVal}\n` +
-              "Don't talk to me. Just write text. No quotes. Don't repeat current field value, just write completion\n";
+              "Don't talk to me. Just write text. No quotes. Don't repeat current field value, just write completion. Stop generating when you finish the sentence. DO NOT GENERATE AFTER YOU GENERATED FIRST\".\" \n";
 
         } else {
           content = `Fill text/string field "${fieldLabel}" in the table "${resLabel}"\n` +
               (Object.keys(recordNoField).length > 0 ? `Record has values for the context: ${inputContext}\n` : '') +
-              "Be short, clear and precise. No quotes. Don't talk to me. Just write text\n";
+              "Be short, clear and precise. No quotes. Don't talk to me. Just write text. Stop generating when you finish the sentence. DO NOT GENERATE AFTER YOU GENERATED FIRST\".\" \n";
         }
 
         process.env.HEAVY_DEBUG && console.log('🪲 OpenAI Prompt 🧠', content);
-        const { content: respContent, finishReason } = await this.options.completion.adapter.complete(content, this.options.completion?.expert?.stop, this.options.completion?.expert?.maxTokens);
-        const stop = this.options.completion.expert?.stop || ['.'];
-        let suggestion = respContent + (
-          finishReason === 'stop' ? (
-            stop[0] === '.' && stop.length === 1 ? '. ' : ''
-          ) : ''
-        );
+        const { content: respContent } = await this.options.completion.adapter.complete(content, [], this.options.completion?.expert?.maxTokens);
+        let suggestion = respContent
 
         if (suggestion.startsWith(currentVal)) {
           suggestion = suggestion.slice(currentVal.length);

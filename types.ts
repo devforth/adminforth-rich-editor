@@ -80,11 +80,6 @@ export interface PluginOptions {
         debounceTime?: number;
 
         /**
-         * Stop completion on these characters. Default is ['.']
-         */
-        stop?: string[];
-
-        /**
          * When completion is made, this plugin passes non-empty fields of the record to the LLM model for record context understanding.
          */
         recordContext?: {
