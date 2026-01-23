@@ -1,5 +1,6 @@
 <template>
-  <div 
+  <div
+    v-if="wasQuillInitializedSuccessfully" 
     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
       focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
       dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 whitespace-normal af-quill-editor"
@@ -15,6 +16,13 @@
       
     </div>
   </div>
+  <Textarea
+      v-else
+      :modelValue="currentValue"
+      @update:modelValue="emit('update:value', $event);"
+      placeholder="Enter some text..."
+      class="w-64"
+   />
 
 
 </template>
@@ -30,8 +38,10 @@ import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import QuillTableBetter from 'quill-table-better-yaroslav8765';
 import 'quill-table-better-yaroslav8765/dist/quill-table-better.css';
+import { Textarea } from '@/afcl'
 
 import { useI18n } from 'vue-i18n';
+import { ok } from "assert";
 
 const { t } = useI18n();
 function dbg(title: string,...args: any[]) {
@@ -144,6 +154,7 @@ const editorFocused = ref(false);
 let lastText: string | null = null;
 
 const imageProgress = ref(0);
+const wasQuillInitializedSuccessfully = ref(true);
 
 const selectedSymbolsCount = ref(0);
 
@@ -303,18 +314,33 @@ const quillOptions = {
     const html = props.record[props.column.name] || '';
     const delta = quill.clipboard.convert({ html });
     const [range] = quill.selection.getRange();
-    quill.updateContents(delta, Quill.sources.USER);
-    quill.setSelection(
-      delta.length() - (range?.length || 0),
-      Quill.sources.SILENT
-    );
-    quill.scrollSelectionIntoView();
+    try {
+      quill.updateContents(delta, Quill.sources.USER);
+      quill.setSelection(
+        delta.length() - (range?.length || 0),
+        Quill.sources.SILENT
+      );
+      quill.scrollSelectionIntoView();
+    } catch (e) {
+      console.error('Error while setting initial quill content', e);
+      return {ok: false, error: "Invalid initial content"};
+    }
+    return {ok: true};
   }
 
 onMounted(() => {
   currentValue.value = props.record[props.column.name] || '';
   quill = new Quill(editor.value as HTMLElement, quillOptions);
-  initValue(quill);
+  const initResult = initValue(quill);
+  if (!initResult.ok) {
+    adminforth.alert({
+      message: `Error while initializing rich text editor: ${initResult.error}`,
+      variant: 'danger',
+    });
+    wasQuillInitializedSuccessfully.value = false;
+    return;
+  }
+  wasQuillInitializedSuccessfully.value = true;
   lastText = quill.getText();
   const linkButton = document.querySelector('.ql-link');
   if (linkButton) {

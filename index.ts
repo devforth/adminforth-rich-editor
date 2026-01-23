@@ -326,7 +326,6 @@ export default class RichEditorPlugin extends AdminForthPlugin {
         process.env.HEAVY_DEBUG && console.log('🪲 OpenAI Prompt 🧠', content);
         const { content: respContent } = await this.options.completion.adapter.complete(content, [], this.options.completion?.expert?.maxTokens);
         let suggestion = respContent
-
         if (suggestion.startsWith(currentVal)) {
           suggestion = suggestion.slice(currentVal.length);
         }
