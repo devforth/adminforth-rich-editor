@@ -1,4 +1,6 @@
 import { CompletionAdapter } from "adminforth";
+import  {type PluginsCommonOptions } from "adminforth";
+
 
 // example options ussage:
 //{
@@ -15,7 +17,7 @@ import { CompletionAdapter } from "adminforth";
 //  }
 //}
 
-export interface PluginOptions {
+export interface PluginOptions extends PluginsCommonOptions {
 
   /**
    * Field where plugin will auto-complete text. Should be string or text field.
