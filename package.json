@@ -20,7 +20,7 @@
     "adminforth",
     "rich editor"
   ],
-  "author": "devforth",
+  "author": "DevForth (https://devforth.io)",
   "license": "MIT",
   "dependencies": {
     "cheerio": "^1.0.0"
