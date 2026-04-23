@@ -11,7 +11,7 @@
   "scripts": {
     "build": "tsc && rsync -av --exclude 'node_modules' custom dist/"
   },
-  "homepage": "https://adminforth.dev/docs/tutorial/Plugins/RichEditor/",
+  "homepage": "https://adminforth.dev/docs/tutorial/Plugins/rich-editor/",
   "repository": {
     "type": "git",
     "url": "https://github.com/devforth/adminforth-rich-editor.git"
@@ -26,11 +26,11 @@
     "cheerio": "^1.0.0"
   },
   "peerDependencies": {
-    "adminforth": "^2.35.0"
+    "adminforth": "^2.42.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
-    "adminforth": "^2.35.0",
+    "adminforth": "^2.42.0",
     "semantic-release": "^24.2.1",
     "semantic-release-slack-bot": "^4.0.2",
     "typescript": "^5.7.3"
