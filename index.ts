@@ -1,5 +1,5 @@
 
-import type { IAdminForth, IHttpServer, AdminForthResource, AdminUser } from "adminforth";
+import type { IAdminForth, IHttpServer, AdminForthResource, AdminUser, IAdminForthPlugin } from "adminforth";
 import type { PluginOptions } from './types.js';
 import { AdminForthPlugin, Filters, RateLimiter } from "adminforth";
 import * as cheerio from 'cheerio';
@@ -17,7 +17,7 @@ export default class RichEditorPlugin extends AdminForthPlugin {
   options: PluginOptions;
   resourceConfig: AdminForthResource = undefined;
 
-  uploadPlugin: AdminForthPlugin;
+  uploadPlugin: IAdminForthPlugin;
 
   activationOrder: number = 100000;
 
