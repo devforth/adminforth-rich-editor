@@ -277,6 +277,10 @@ export default class RichEditorPlugin extends AdminForthPlugin {
       handler: async ({ body, headers }) => {
         const { record } = body;
 
+        if (!record) {
+          return { completion: [] };
+        }
+
         if (this.rateLimiter) {
           // rate limit
           // const { error } = RateLimiter.checkRateLimit(
