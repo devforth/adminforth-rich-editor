@@ -1,7 +1,7 @@
 
 import type { IAdminForth, IHttpServer, AdminForthResource, AdminUser, IAdminForthPlugin } from "adminforth";
 import type { PluginOptions } from './types.js';
-import { AdminForthPlugin, Filters, RateLimiter } from "adminforth";
+import { AdminForthPlugin, parseBody, Filters, RateLimiter } from "adminforth";
 import * as cheerio from 'cheerio';
 import { z } from "zod";
 
@@ -275,28 +275,12 @@ export default class RichEditorPlugin extends AdminForthPlugin {
     return JSON.stringify(Object.fromEntries(fields));
   }
 
-  private parseBody<T>(
-    schema: z.ZodType<T>,
-    body: unknown,
-    response: { setStatus: (code: number, message: string) => void },
-  ): { ok: true; data: T } | { ok: false; error: { error: string; details: unknown } } {
-    const parsed = schema.safeParse(body ?? {});
-    if (!parsed.success) {
-      response.setStatus(400, '');
-      return {
-        ok: false,
-        error: { error: 'Request body validation failed', details: parsed.error.issues },
-      };
-    }
-    return { ok: true, data: parsed.data };
-  }
-
   setupEndpoints(server: IHttpServer) {
     server.endpoint({
       method: 'POST',
       path: `/plugin/${this.pluginInstanceId}/doComplete`,
       handler: async ({ body, headers, response }) => {
-        const parsed = this.parseBody(doCompleteBodySchema, body, response);
+        const parsed = parseBody(doCompleteBodySchema, body, response);
         if ('error' in parsed) return parsed.error;
         const data = parsed.data;
         const { record } = data;
