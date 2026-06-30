@@ -3,6 +3,11 @@ import type { IAdminForth, IHttpServer, AdminForthResource, AdminUser, IAdminFor
 import type { PluginOptions } from './types.js';
 import { AdminForthPlugin, Filters, RateLimiter } from "adminforth";
 import * as cheerio from 'cheerio';
+import { z } from "zod";
+
+const doCompleteBodySchema = z.object({
+  record: z.record(z.string(), z.unknown()),
+}).strict();
 
 
 // options:
@@ -270,12 +275,27 @@ export default class RichEditorPlugin extends AdminForthPlugin {
     return JSON.stringify(Object.fromEntries(fields));
   }
 
+  private parseBody<T>(
+    schema: z.ZodType<T>,
+    body: unknown,
+    response: { setStatus: (code: number, message: string) => void },
+  ): T | null {
+    const parsed = schema.safeParse(body ?? {});
+    if (!parsed.success) {
+      response.setStatus(422, parsed.error.message);
+      return null;
+    }
+    return parsed.data;
+  }
+
   setupEndpoints(server: IHttpServer) {
     server.endpoint({
       method: 'POST',
       path: `/plugin/${this.pluginInstanceId}/doComplete`,
-      handler: async ({ body, headers }) => {
-        const { record } = body;
+      handler: async ({ body, headers, response }) => {
+        const data = this.parseBody(doCompleteBodySchema, body, response);
+        if (!data) return;
+        const { record } = data;
 
         if (!record) {
           return { completion: [] };
@@ -333,6 +353,11 @@ export default class RichEditorPlugin extends AdminForthPlugin {
           maxTokens: this.options.completion?.expert?.maxTokens ?? 50,
         });
         let suggestion = respContent
+        if (!suggestion) {
+          return {
+            completion: []
+          };
+        }
         if (suggestion.startsWith(currentVal)) {
           suggestion = suggestion.slice(currentVal.length);
         }

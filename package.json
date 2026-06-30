@@ -23,6 +23,7 @@
   "author": "DevForth (https://devforth.io)",
   "license": "MIT",
   "dependencies": {
+    "zod": "^4.3.6",
     "cheerio": "^1.0.0"
   },
   "peerDependencies": {
