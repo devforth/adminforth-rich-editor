@@ -1,7 +1,7 @@
 
 import type { IAdminForth, IHttpServer, AdminForthResource, AdminUser, IAdminForthPlugin } from "adminforth";
 import type { PluginOptions } from './types.js';
-import { AdminForthPlugin, parseBody, Filters, RateLimiter } from "adminforth";
+import { AdminForthPlugin, Filters, RateLimiter } from "adminforth";
 import * as cheerio from 'cheerio';
 import { z } from "zod";
 
@@ -279,10 +279,9 @@ export default class RichEditorPlugin extends AdminForthPlugin {
     server.endpoint({
       method: 'POST',
       path: `/plugin/${this.pluginInstanceId}/doComplete`,
+      request_schema: doCompleteBodySchema,
       handler: async ({ body, headers, response }) => {
-        const parsed = parseBody(doCompleteBodySchema, body, response);
-        if ('error' in parsed) return parsed.error;
-        const data = parsed.data;
+        const data = body as z.infer<typeof doCompleteBodySchema>;
         const { record } = data;
 
         if (!record) {
