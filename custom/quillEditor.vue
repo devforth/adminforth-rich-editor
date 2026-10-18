@@ -1,10 +1,11 @@
 <template>
   <div
     v-if="wasQuillInitializedSuccessfully" 
-    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 
-      focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400
-      dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 whitespace-normal af-quill-editor"
-    :class="'bg-lightInputBackground placeholder-lightInputPlaceholderText text-lightInputText border-lightInputBorder dark:!bg-darkInputBackground dark:!placeholder-darkInputPlaceholderText dark:!text-darkInputText dark:!border-darkInputBorder'"
+    class="af-quill-editor block w-full whitespace-normal rounded-default border shadow-customLight transition-colors
+      bg-lightInputBackground text-lightInputText border-lightInputBorder hover:border-lightInputBorderHover
+      focus-within:border-lightInputFocusBorder focus-within:ring-[3px] focus-within:ring-lightInputFocusRing
+      dark:bg-darkInputBackground dark:text-darkInputText dark:border-darkInputBorder dark:hover:border-darkInputBorderHover
+      dark:focus-within:border-darkInputFocusBorder dark:focus-within:ring-darkInputFocusRing"
   >
     <div  
       ref="editor"
@@ -28,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, onUnmounted, watch, type Ref } from "vue";
+import { onMounted, ref, onUnmounted, watch, h, render, type Ref, type FunctionalComponent } from "vue";
 import { callAdminForthApi } from '@/utils';
 import { AdminForthColumnCommon } from '@/types/Common';
 import adminforth from '@/adminforth';
@@ -39,6 +40,11 @@ import "quill/dist/quill.snow.css";
 import QuillTableBetter from 'quill-table-better-yaroslav8765';
 import 'quill-table-better-yaroslav8765/dist/quill-table-better.css';
 import { Textarea } from '@/afcl'
+import {
+  IconAlignCenter, IconAlignJustify, IconAlignLeft, IconAlignRight, IconBold, IconCode, IconHeading2, IconHeading3,
+  IconImage, IconItalic, IconLink, IconList, IconListChecks, IconListOrdered, IconRemoveFormatting, IconStrikethrough,
+  IconTable, IconTextQuote, IconUnderline,
+} from '@iconify-prerendered/vue-lucide';
 
 import { useI18n } from 'vue-i18n';
 import { ok } from "assert";
@@ -130,6 +136,31 @@ Quill.register(ImageBlotEmbed);
 Quill.register({
   'modules/table-better': QuillTableBetter
 }, true);
+
+// the toolbar draws Lucide icons like the rest of the UI; Quill takes icons as SVG strings,
+// so they are set after the table module registered its own one
+function iconSvg(icon: FunctionalComponent) {
+  const holder = document.createElement('div');
+  render(h(icon), holder);
+  return holder.innerHTML;
+}
+
+const quillIcons = Quill.import('ui/icons') as Record<string, any>;
+Object.assign(quillIcons, {
+  bold: iconSvg(IconBold),
+  italic: iconSvg(IconItalic),
+  underline: iconSvg(IconUnderline),
+  strike: iconSvg(IconStrikethrough),
+  'table-better': iconSvg(IconTable),
+  blockquote: iconSvg(IconTextQuote),
+  'code-block': iconSvg(IconCode),
+  link: iconSvg(IconLink),
+  image: iconSvg(IconImage),
+  clean: iconSvg(IconRemoveFormatting),
+  header: { ...quillIcons.header, 2: iconSvg(IconHeading2), 3: iconSvg(IconHeading3) },
+  list: { ...quillIcons.list, ordered: iconSvg(IconListOrdered), bullet: iconSvg(IconList), check: iconSvg(IconListChecks) },
+  align: { ...quillIcons.align, '': iconSvg(IconAlignLeft), center: iconSvg(IconAlignCenter), right: iconSvg(IconAlignRight), justify: iconSvg(IconAlignJustify) },
+});
 
 
 const updaterQueue = new AsyncQueue();
@@ -630,34 +661,61 @@ function removeCompletionOnBlur() {
 
 .af-quill-editor {
 
+  // the toolbar sits on a hairline over the text, its buttons are quiet like AFCL ghost icon buttons
   .ql-toolbar.ql-snow[class] {
-    border: none;
-    padding: 0 0 1rem 0;
-    .ql-picker-label{
-      padding-left: 0;
+    @apply flex flex-wrap items-center gap-0.5 border-0 border-b border-lightInputBorder px-1.5 py-1 dark:border-darkInputBorder;
+    font-family: inherit;
+
+    .ql-formats {
+      @apply inline-flex items-center gap-0.5 mr-2;
+    }
+
+    button, .ql-picker-label {
+      @apply w-7 h-7 p-1.5 rounded-default border-0 text-lightInputIconColor transition-colors dark:text-darkInputIconColor;
+    }
+
+    button svg, .ql-picker-label svg {
+      @apply w-4 h-4;
+    }
+
+    button:hover, .ql-picker-label:hover {
+      @apply bg-lightSecondaryDarken text-lightInputText dark:bg-darkSecondaryLighten dark:text-darkInputText;
+    }
+
+    button.ql-active, .ql-picker-label.ql-active, .ql-picker-item.ql-selected {
+      @apply text-lightPrimary dark:text-darkPrimary;
+    }
+
+    .ql-picker.ql-icon-picker {
+      @apply w-7 h-7;
+    }
+
+    .ql-picker-options {
+      @apply p-1 rounded-lg border-0 bg-lightDropdownOptionsBackground shadow-popover dark:bg-darkDropdownOptionsBackground dark:shadow-darkPopover;
+    }
+
+    .ql-picker-item {
+      @apply w-7 h-7 p-1.5 rounded-md text-lightInputIconColor hover:bg-lightDropdownOptionsHoverBackground hover:text-lightInputText dark:text-darkInputIconColor dark:hover:bg-darkDropdownOptionsHoverBackground dark:hover:text-darkInputText;
     }
   }
 
   .ql-container {
     border: 0;
+    font-family: inherit;
+    font-size: inherit;
+
     .ql-editor {
       position: relative;
-      padding: 0;
+      @apply px-3 py-2.5 text-sm;
       min-height: 100px;
       &.ql-blank::before {
-        left: 0px;
-        font-style: normal;
+        @apply left-3 right-3 not-italic text-lightInputPlaceholderText dark:text-darkInputPlaceholderText;
       }
     }
   }
 
-  // .ql-editor:not(:focus) [completer] {
-  //   display: none;
-  // }
-
   .ql-editor [completer] {
-    color: gray;
-    font-style: italic;
+    @apply italic text-lightInputPlaceholderText dark:text-darkInputPlaceholderText;
   }
 
   // basic typography
@@ -690,23 +748,21 @@ function removeCompletionOnBlur() {
     /* Horizontal rule */
     hr {
       margin: 0.8rem 0;
-      border: none;
-      border-top: 1px solid #ddd;
+      @apply border-0 border-t border-lightInputBorder dark:border-darkInputBorder;
     }
 
     /* Blockquotes */
     blockquote {
       margin: 0.8rem 0;
       padding-left: 0.8rem;
-      border-left: 2px solid #ccc;
+      @apply border-0 border-l-2 border-lightInputBorder text-lightInputIconColor dark:border-darkInputBorder dark:text-darkInputIconColor;
     }
 
     /* Preformatted text */
     pre {
       margin: 0.8rem 0;
       padding: 0.4rem;
-      background: #f8f9fa;
-      border-radius: 3px;
+      @apply rounded bg-lightSecondaryDarken text-lightInputText dark:bg-darkSecondaryLighten dark:text-darkInputText;
     }
 
     /* Tables */
@@ -717,11 +773,11 @@ function removeCompletionOnBlur() {
 
     th, td {
       padding: 0.3rem;
-      border: 1px solid #ddd;
+      @apply border border-lightInputBorder dark:border-darkInputBorder;
     }
 
     thead th {
-      border-bottom: 1.5px solid #aaa;
+      @apply border-b-2;
     }
 
     /* Images */
@@ -732,27 +788,21 @@ function removeCompletionOnBlur() {
     }
   }
 
+  // Quill's own icons which are left (table menus) follow the muted icon color too
   .ql-snow .ql-stroke {
-    @apply dark:stroke-darkPrimary;
-    @apply stroke-lightPrimary;
-
-  }
-  .ql-snow button:hover .ql-stroke,
-  .ql-snow [role="button"]:hover .ql-stroke {
-    @apply dark:stroke-darkPrimary;
-    @apply stroke-lightPrimary;
-    filter: brightness(1.3);
+    @apply stroke-lightInputIconColor dark:stroke-darkInputIconColor;
   }
 
   .ql-snow .ql-fill {
-    @apply dark:fill-darkPrimary;
-    @apply fill-lightPrimary;
+    @apply fill-lightInputIconColor dark:fill-darkInputIconColor;
   }
 
-  .ql-snow button:hover .ql-fill {
-    @apply dark:fill-darkPrimary;
-    @apply fill-lightPrimary;
-    filter: brightness(1.3);
+  .ql-snow .ql-active .ql-stroke {
+    @apply stroke-lightPrimary dark:stroke-darkPrimary;
+  }
+
+  .ql-snow .ql-active .ql-fill {
+    @apply fill-lightPrimary dark:fill-darkPrimary;
   }
 
 }
@@ -777,11 +827,6 @@ function removeCompletionOnBlur() {
     stroke: theme('colors.darkPrimary') !important;
     opacity: 0.5 !important;
   }
-}
-
-.ql-table-better svg path  {
-  @apply dark:fill-darkPrimary;
-  @apply fill-lightPrimary;
 }
 
 .ql-table-select-container {

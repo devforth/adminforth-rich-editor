@@ -4,6 +4,9 @@
 
 [![Ask AI](https://tluma.ai/badge)](https://tluma.ai/ask-ai/devforth/adminforth)
 
+> [!WARNING]
+> **This plugin is not recommended for new projects.** Use the [Markdown plugin](https://adminforth.dev/docs/tutorial/Plugins/markdown/) (`@adminforth/markdown`) for editing formatted text instead. It stores content as Markdown, which suits the agentic era much better than HTML: AI agents read and write Markdown reliably, it stays readable as plain text and gives clean diffs. RichEditor keeps working for apps which already store HTML.
+
 Allows to add a rich text editor to your AdminForth text columns.
 
 ## Features
