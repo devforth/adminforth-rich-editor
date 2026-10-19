@@ -279,6 +279,7 @@ export default class RichEditorPlugin extends AdminForthPlugin {
     server.endpoint({
       method: 'POST',
       path: `/plugin/${this.pluginInstanceId}/doComplete`,
+      agent: { hiddenFromAgents: true },
       request_schema: doCompleteBodySchema,
       handler: async ({ body, headers, response }) => {
         const data = body as z.infer<typeof doCompleteBodySchema>;
