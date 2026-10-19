@@ -172,9 +172,9 @@ export default class RichEditorPlugin extends AdminForthPlugin {
       // after edit we need to delete attachments that are not in the html anymore
       // and add new ones
       (resourceConfig.hooks.edit.afterSave).push(
-        async ({ recordId, record, adminUser }: { recordId: any, record: any, adminUser: AdminUser }) => {
-          process.env.HEAVY_DEBUG && console.log('⚓ Cought hook', recordId, 'rec', record);
-          if (record[this.options.htmlFieldName] === undefined) {
+        async ({ recordId, updates, adminUser }: { recordId: any, updates: any, adminUser: AdminUser }) => {
+          process.env.HEAVY_DEBUG && console.log('⚓ Cought hook', recordId, 'updates', updates);
+          if (updates[this.options.htmlFieldName] === undefined) {
             // field was not changed, do nothing
             return { ok: true };
           }
@@ -183,7 +183,7 @@ export default class RichEditorPlugin extends AdminForthPlugin {
             Filters.EQ(this.options.attachments.attachmentResourceIdFieldName, resourceConfig.resourceId)
           ]);
           const existingS3Paths = existingAparts.map((a: any) => a[this.options.attachments.attachmentFieldName]);
-          const newS3Paths = getAttachmentPathes(record[this.options.htmlFieldName]);
+          const newS3Paths = getAttachmentPathes(updates[this.options.htmlFieldName]);
           process.env.HEAVY_DEBUG && console.log('📸 Existing s3Paths (from db)', existingS3Paths)
           process.env.HEAVY_DEBUG && console.log('📸 Found new s3Paths (from text)', newS3Paths);
           const toDelete = existingS3Paths.filter(s3Path => !newS3Paths.includes(s3Path));
