@@ -344,14 +344,8 @@ const quillOptions = {
   function initValue(quill: Quill) {
     const html = props.record[props.column.name] || '';
     const delta = quill.clipboard.convert({ html });
-    const [range] = quill.selection.getRange();
     try {
-      quill.updateContents(delta, Quill.sources.USER);
-      quill.setSelection(
-        delta.length() - (range?.length || 0),
-        Quill.sources.SILENT
-      );
-      quill.scrollSelectionIntoView();
+      quill.updateContents(delta, Quill.sources.SILENT);
     } catch (e) {
       console.error('Error while setting initial quill content', e);
       return {ok: false, error: "Invalid initial content"};
