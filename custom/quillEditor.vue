@@ -196,7 +196,7 @@ async function saveToServer(file: File) {
   const originalFilename = file.name.split('.').slice(0, -1).join('.');
   const originalExtension = file.name.split('.').pop();
   // send fd to s3
-  const { uploadUrl, tagline, previewUrl, filePath, error } = await callAdminForthApi({
+  const { uploadUrl, tagline, previewUrl, filePath, error, contentType: uploadContentType } = await callAdminForthApi({
       path: `/plugin/${props.meta.uploadPluginInstanceId}/get_file_upload_url`,
       method: 'POST',
       body: {
@@ -228,7 +228,7 @@ async function saveToServer(file: File) {
       resolve(success);
     });
     xhr.open('PUT', uploadUrl, true);
-    xhr.setRequestHeader('Content-Type', file.type);
+    xhr.setRequestHeader('Content-Type', uploadContentType || file.type);
     xhr.setRequestHeader('x-amz-tagging', tagline);
     xhr.send(file);
   });
