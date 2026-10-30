@@ -116,17 +116,13 @@ export default class RichEditorPlugin extends AdminForthPlugin {
       ) => {
         process.env.HEAVY_DEBUG && console.log('📸 Creating attachment records', JSON.stringify(recordId))
         await Promise.all(s3Paths.map(async (s3Path) => {
-          await adminforth.createResourceRecord(
-            {
-              resource: this.attachmentResource,
-              record: {
-                [options.attachments.attachmentFieldName]: s3Path,
-                [options.attachments.attachmentRecordIdFieldName]: recordId,
-                [options.attachments.attachmentResourceIdFieldName]: resourceConfig.resourceId,
-              },
-              adminUser
-            }
-          )
+          await adminforth.resource(this.attachmentResource.resourceId)
+            .asSystem({ adminUser })
+            .create({
+              [options.attachments.attachmentFieldName]: s3Path,
+              [options.attachments.attachmentRecordIdFieldName]: recordId,
+              [options.attachments.attachmentResourceIdFieldName]: resourceConfig.resourceId,
+            });
         }
         ));
       }
@@ -144,14 +140,14 @@ export default class RichEditorPlugin extends AdminForthPlugin {
         );
 
         await Promise.all(attachments.map(async (a: any) => {
-          await adminforth.deleteResourceRecord(
-            {
-              resource: this.attachmentResource,
-              recordId: a[attachmentPrimaryKeyField.name],
-              adminUser,
-              record: a,
-            }
-          )
+          // attachment bookkeeping must not fail the save of the edited record
+          try {
+            await adminforth.resource(this.attachmentResource.resourceId)
+              .asSystem({ adminUser, record: a })
+              .delete(a[attachmentPrimaryKeyField.name]);
+          } catch (err) {
+            console.error('Error deleting attachment record', a[attachmentPrimaryKeyField.name], err);
+          }
         }))
       }
       
